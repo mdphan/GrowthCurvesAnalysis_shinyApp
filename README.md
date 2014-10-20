@@ -9,7 +9,7 @@ https://mdphan.shinyapps.io/GrowthCurvesAnalysis/
 
 Bacterial growth in liquid medium can be investigated by measuring the change in optical density (OD600) over time (i.e. growth curve). A typical growth curve has three phases: lag, log and stationary phase (see figure). 
 
-![Growth curve parameters explained](growth_curve_params.pdf)
+![Growth curve parameters explained](growth_curve_params.png)
 
 This app accepts user data to draw growth curves and uses the opm package to estimate curve parameters (mu, lambda, A and AUC) to represent the kinetic growth. The app was designed to deal with the most common experimental design in the lab where growth of one bacterial strain is used as a reference to compare with growth of several mutant strains; and the experiment is typically repeated 3 or more times. To compare the difference between the reference strain and each mutant, analysis of variance and Dunnett post-test are employed. 
 
