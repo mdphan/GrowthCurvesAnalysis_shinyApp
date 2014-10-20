@@ -161,13 +161,12 @@ shinyServer(function(input, output) {
     })
 
     output$dl_gc_plot <- downloadHandler(
-        filename = "gc_plot.png",
-        content = function(file){
+        filename = "gc_plot.pdf",
+        content = function(file,res=300, units="in"){
             device <- function(..., width, height) {
-                grDevices::png(..., width = width, height = height,
-                               res = 300, units = "in")
+                grDevices::pdf(..., width = width, height = height)
             }
-            ggsave(file,plot=plot_gc(data=Data()$gc,strain=input$strain), device=device)
+            ggsave(file,plot=plot_gc(data=Data()$gc,strain=input$strain), device=device,dpi=res, units=units)
         }
     )
 
@@ -182,13 +181,12 @@ shinyServer(function(input, output) {
     })
 
     output$dl_ci_plot <- downloadHandler(
-        filename = "ci_plot.png",
-        content = function(file){
+        filename = "ci_plot.pdf",
+        content = function(file,res=300, units="in"){
             device <- function(..., width, height) {
-                grDevices::png(..., width = width, height = height,
-                               res = 300, units = "in")
+                grDevices::pdf(..., width = width, height = height)
             }
-            ggsave(file,plot=ci(), device=device)
+            ggsave(file,plot=ci(), device=device,dpi=res, units=units)
         }
     )
 

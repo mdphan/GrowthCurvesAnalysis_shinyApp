@@ -23,7 +23,7 @@ shinyUI(pageWithSidebar(
                      submitButton(text="Submit"),
                      plotOutput("gc_plot"),
                      tags$hr(),
-                     downloadButton("dl_gc_plot","Download plot (.png)"),
+                     downloadButton("dl_gc_plot","Download plot (.pdf)"),
                      value = 1),
             tabPanel("Parameter estimation",
                      h4(textOutput("caption3")),
@@ -39,7 +39,7 @@ shinyUI(pageWithSidebar(
                      tags$hr(),
                      tags$body(textOutput("note2")),
                      tags$hr(),
-                     downloadButton("dl_ci_plot", "Download plot (.png)"),
+                     downloadButton("dl_ci_plot", "Download plot (.pdf)"),
                      value = 3),
             id="tabs1")        
     )
