@@ -1,0 +1,42 @@
+shinyUI(pageWithSidebar(
+    headerPanel("Bacterial Growth Curve Analysis"),
+    
+    sidebarPanel(
+        helpText("This app is designed to analyse bacterial growth curves, including interactive plotting of growth curves, estimating of curve parameters and statistically comparing curve parameters of different groups.
+                 "),
+        tags$hr(),
+        helpText("Choose tab-delimited file from local drive, please refer to the sample file for arrangment of raw data. 
+                    Note: The raw data provided should be blank corrected.
+                 "),
+        fileInput('file1', 'Choose tab-delimited file: ',
+                  accept=c('text/comma-separated-values,text/plain')),
+        tags$hr(),
+        h4(textOutput("caption1")),
+        htmlOutput("overview")        
+    ),
+    
+    mainPanel(
+        tabsetPanel(
+            tabPanel("Graphs",
+                     h4(textOutput("caption2")),
+                     uiOutput("checklist"),
+                     submitButton(text="Submit"),
+                     plotOutput("gc_plot"),
+                     value = 1),
+            tabPanel("Parameter estimation",
+                     h4(textOutput("caption3")),
+                     tableOutput("param"),
+                     tags$hr(),
+                     tags$body(textOutput("note1")),
+                     value = 2),
+            tabPanel("Statistical Comparisons",
+                     h4(textOutput("caption4")),                      
+                     uiOutput("selectref"),
+                     submitButton(text="Submit"),
+                     plotOutput("ci_plot"),
+                     tags$hr(),
+                     tags$body(textOutput("note2")),
+                     value = 3),
+            id="tabs1")        
+    )
+))
