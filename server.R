@@ -20,7 +20,7 @@ gcLoadData <- function(file) {
     gc
 }
 
-plotgc <- function(data=gc.s, strain="WT") {
+plot_gc <- function(data=gc.s, strain="WT") {
     stat_sum_df <- function(fun, geom="smooth", ...) {
         stat_summary(fun.data=fun, geom=geom, ...)
     }
@@ -31,6 +31,20 @@ plotgc <- function(data=gc.s, strain="WT") {
     p
 }
 
+plot_ci <- function(data=ci) {
+    p <- ggplot(data, aes(estimate, lhs)) +
+    geom_point(aes(estimate, lhs, colour=Significant)) +
+    geom_errorbarh(aes(xmin = lwr, xmax = upr, colour=Significant), size=0.5, height = 0.3) +
+    scale_color_manual(values = c("TRUE"="red", "FALSE"="black")) +
+    facet_grid(.~param, scales="free") +
+    geom_vline(xintercept=0, colour="blue", linetype="dotted") +
+    ggtitle("95% family-wise confident intervals") +
+    xlab("Estimated difference") +
+    ylab("Pairwise comparison") +
+    theme_bw()
+    p
+}
+    
 extractparam <- function(data) {
     require(opm)
     mu <- extract(data, as.labels=list("Strain","Replicate"),subset="mu", dataframe=TRUE)
@@ -63,6 +77,8 @@ compare <- function(data, ref) {
     ci.all
 }
 
+
+### Start shinyServer
 shinyServer(function(input, output) {
     
     Data <- reactive({
@@ -89,7 +105,7 @@ shinyServer(function(input, output) {
         gc.opm <- reshape(gc, v.names = "OD", direction = "wide", idvar = c("Strain","Treatment","Replicate"), timevar= "Time")
         gc.opm <- opmx(gc.opm, position = c("Strain","Replicate"), well = "Treatment", prefix = "OD.", full.name = c(GC = "Growth curves"))
         sm.gc <- do_aggr(gc.opm, method = "splines", boot = 100, options = set_spline_options(type = "smooth.spline")) 
-        param <- extractparam(sm.gc)        
+        param <- extractparam(sm.gc)
         
         # create a list of data for use in rendering
         info <- list(gc=gc,
@@ -141,25 +157,40 @@ shinyServer(function(input, output) {
     
     output$gc_plot <- renderPlot({
         if (is.null(input$file1)) { return() }
-        print(plotgc(data=Data()$gc,strain=input$strain))
-        
+        plot_gc(data=Data()$gc,strain=input$strain)      
+    })
+
+    output$dl_gc_plot <- downloadHandler(
+        filename = "gc_plot.png",
+        content = function(file){
+            device <- function(..., width, height) {
+                grDevices::png(..., width = width, height = height,
+                               res = 300, units = "in")
+            }
+            ggsave(file,plot=plot_gc(data=Data()$gc,strain=input$strain), device=device)
+        }
+    )
+
+    ci <- reactive({
+        d <- compare(Data()$sm.gc, input$ref)
+        plot_ci(d)
     })
 
     output$ci_plot <- renderPlot({
         if (is.null(input$ref)) { return() }
-        ci <- compare(Data()$sm.gc, input$ref)
-        print(ggplot(ci, aes(estimate, lhs)) +
-                  geom_point(aes(estimate, lhs, colour=Significant)) +
-                  geom_errorbarh(aes(xmin = lwr, xmax = upr, colour=Significant), size=0.5, height = 0.3) +
-                  scale_color_manual(values = c("TRUE"="red", "FALSE"="black")) +
-                  facet_grid(.~param, scales="free") +
-                  geom_vline(xintercept=0, colour="blue", linetype="dotted") +
-                  ggtitle("95% family-wise confident intervals") +
-                  xlab("Estimated difference") +
-                  ylab("Pairwise comparison") +
-                  theme_bw()
-              )    
+        ci()
     })
+
+    output$dl_ci_plot <- downloadHandler(
+        filename = "ci_plot.png",
+        content = function(file){
+            device <- function(..., width, height) {
+                grDevices::png(..., width = width, height = height,
+                               res = 300, units = "in")
+            }
+            ggsave(file,plot=ci(), device=device)
+        }
+    )
 
     output$caption1 <- renderText( {
         if (is.null(input$file1)) { return("Waiting for input...") }
