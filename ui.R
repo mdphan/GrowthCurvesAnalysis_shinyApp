@@ -3,15 +3,24 @@ shinyUI(pageWithSidebar(
     
     sidebarPanel(
         helpText("This app is designed to analyse bacterial growth curves, including interactive plotting of growth curves, estimating of curve parameters and comparing curve parameters of different groups."),
+        
         tags$hr(),
-        helpText("Choose tab-delimited file to upload, please refer to the", tags$a(href="https://github.com/mdphan/GrowthCurvesAnalysis_shinyApp/blob/master/sample_data.txt", "sample file"),  "for arrangment of raw data."),
-        helpText("Note: The data provided should be blank corrected."),
-        fileInput('file1', 'File: ',
+        
+        helpText("Choose tab-delimited file to upload:"),
+        
+        fileInput('file1', '',
                   accept=c('text/comma-separated-values,text/plain')),
+        
+        helpText("Note: The data provided should be blank corrected."),
+        helpText("Please download this ", tags$a(href="https://raw.githubusercontent.com/mdphan/GrowthCurvesAnalysis_shinyApp/master/sample_data.txt", "sample file"), " to use as input if you would like give this app a try."),
+        
         tags$hr(),
+        
         h4(textOutput("caption1")),
         htmlOutput("overview"),
+        
         tags$hr(),
+        
         tags$p("Source code: ", tags$a(href="https://github.com/mdphan/GrowthCurvesAnalysis_shinyApp", "@mdphan/GrowthCurvesAnalysis_shinyApp/"))
     ),
     

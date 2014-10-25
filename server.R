@@ -136,7 +136,7 @@ shinyServer(function(input, output) {
     output$checklist <- renderUI({
         if (is.null(input$file1)) { return() }
         checkboxGroupInput(inputId = "strain", 
-                           label = "Strain(s) to plot:", 
+                           label = "Select strain(s) to plot (and click Submit):", 
                            choices = Data()$strainlist, 
                            inline = TRUE)        
     })
@@ -150,7 +150,7 @@ shinyServer(function(input, output) {
     output$selectref <- renderUI({
         if (is.null(input$file1)) { return() }
         selectInput(inputId = "ref",
-                    label = "Select reference strain for comparison: ",
+                    label = "Select a reference strain for comparison (and click Submit): ",
                     choices = Data()$strainlist,
                     selected="wildtype")
     })
